@@ -1,0 +1,552 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración | CineWorld</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            padding: 30px 5%;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e50914;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: #e50914;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+            background: #e50914;
+            padding: 10px 16px;
+            border-radius: 5px;
+        }
+
+        .contenedor {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .formulario {
+            background: #202020;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 35px;
+        }
+
+        .campos {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background: #303030;
+            color: white;
+            font-size: 15px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            grid-column: 1 / -1;
+        }
+
+        .completo {
+            grid-column: 1 / -1;
+        }
+
+        button {
+            border: none;
+            padding: 11px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .guardar {
+            background: #e50914;
+            color: white;
+            margin-top: 18px;
+        }
+
+        .cancelar {
+            background: #555;
+            color: white;
+            margin-top: 18px;
+            margin-left: 8px;
+        }
+
+        .editar {
+            background: #e6a700;
+            color: black;
+            margin: 3px;
+        }
+
+        .eliminar {
+            background: #b00020;
+            color: white;
+            margin: 3px;
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #202020;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 13px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background: #e50914;
+        }
+
+        tr:hover {
+            background: #303030;
+        }
+
+        #mensaje {
+            margin-top: 15px;
+            color: #65d98a;
+        }
+
+        .error {
+            color: #ff7777 !important;
+        }
+
+        @media (max-width: 650px) {
+            .campos {
+                grid-template-columns: 1fr;
+            }
+
+            .completo {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <header>
+        <h1>CINEWORLD</h1>
+        <a href="index.html">Volver al catálogo</a>
+    </header>
+
+    <section class="formulario">
+
+        <h2 id="tituloFormulario">Agregar película</h2>
+
+        <form id="formularioPeliculas">
+
+            <input type="hidden" id="id">
+
+            <div class="campos">
+
+                <input
+                    type="text"
+                    id="titulo"
+                    placeholder="Título de la película"
+                    required>
+
+                <input
+                    type="number"
+                    id="anio"
+                    placeholder="Año"
+                    min="1888"
+                    max="2100"
+                    required>
+
+                <input
+                    type="text"
+                    id="genero"
+                    placeholder="Género"
+                    required>
+
+                <input
+                    type="number"
+                    id="calificacion"
+                    placeholder="Calificación (ej. 8.5)"
+                    min="0"
+                    max="10"
+                    step="0.1">
+
+                <textarea
+                    id="sinopsis"
+                    placeholder="Sinopsis de la película"
+                    required></textarea>
+
+                <input
+                    class="completo"
+                    type="url"
+                    id="imagen"
+                    placeholder="Enlace de la imagen del póster">
+
+                <input
+                    class="completo"
+                    type="url"
+                    id="trailer"
+                    placeholder="Enlace del tráiler">
+
+            </div>
+
+            <button type="submit" class="guardar" id="botonGuardar">
+                Guardar película
+            </button>
+
+            <button
+                type="button"
+                class="cancelar"
+                id="botonCancelar"
+                hidden>
+                Cancelar edición
+            </button>
+
+            <p id="mensaje"></p>
+
+        </form>
+    </section>
+
+    <section>
+        <h2>Películas registradas</h2>
+
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Año</th>
+                        <th>Género</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="listaPeliculas">
+                    <tr>
+                        <td colspan="5">Cargando películas...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    // CONEXIÓN CON SUPABASE
+
+    const SUPABASE_URL =
+        "https://gpolbvooqnbtdngjolef.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_-rLWcnKqn1BRi0ubTM3hmg_8Zau0878";
+
+    const cliente = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    const formulario = document.getElementById("formularioPeliculas");
+    const lista = document.getElementById("listaPeliculas");
+    const mensaje = document.getElementById("mensaje");
+
+    // EVITAR INSERTAR HTML DIRECTAMENTE DESDE LOS DATOS
+
+    function escapar(valor) {
+        return String(valor ?? "").replace(/[&<>"']/g, caracter => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[caracter]);
+    }
+
+    // MOSTRAR MENSAJES
+
+    function mostrarMensaje(texto, error = false) {
+        mensaje.textContent = texto;
+        mensaje.className = error ? "error" : "";
+    }
+
+    // CARGAR PELÍCULAS
+
+    async function cargarPeliculas() {
+
+        lista.innerHTML = `
+            <tr>
+                <td colspan="5">Cargando películas...</td>
+            </tr>
+        `;
+
+        const { data, error } = await cliente
+            .from("peliculas")
+            .select("*")
+            .order("id", { ascending: true });
+
+        if (error) {
+            lista.innerHTML = `
+                <tr>
+                    <td colspan="5">Error al cargar las películas.</td>
+                </tr>
+            `;
+            mostrarMensaje(error.message, true);
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            lista.innerHTML = `
+                <tr>
+                    <td colspan="5">No hay películas registradas.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        lista.innerHTML = data.map(pelicula => `
+            <tr>
+                <td>${escapar(pelicula.id)}</td>
+                <td>${escapar(pelicula.titulo)}</td>
+                <td>${escapar(pelicula.anio)}</td>
+                <td>${escapar(pelicula.genero)}</td>
+                <td>
+                    <button
+                        class="editar"
+                        data-edit="${escapar(pelicula.id)}">
+                        Editar
+                    </button>
+
+                    <button
+                        class="eliminar"
+                        data-delete="${escapar(pelicula.id)}">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    // AGREGAR O ACTUALIZAR PELÍCULAS
+
+    formulario.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const id = document.getElementById("id").value;
+
+        const pelicula = {
+            titulo: document.getElementById("titulo").value.trim(),
+            anio: Number(document.getElementById("anio").value),
+            genero: document.getElementById("genero").value.trim(),
+            sinopsis: document.getElementById("sinopsis").value.trim(),
+            calificacion: document.getElementById("calificacion").value === ""
+                ? null
+                : Number(document.getElementById("calificacion").value),
+            imagen: document.getElementById("imagen").value.trim() || null,
+            trailer: document.getElementById("trailer").value.trim() || null
+        };
+
+        if (
+            !pelicula.titulo ||
+            !pelicula.genero ||
+            !pelicula.sinopsis ||
+            !Number.isInteger(pelicula.anio) ||
+            pelicula.anio < 1888 ||
+            pelicula.anio > 2100 ||
+            (pelicula.calificacion !== null &&
+                (pelicula.calificacion < 0 || pelicula.calificacion > 10))
+        ) {
+            mostrarMensaje("Revisa los datos ingresados.", true);
+            return;
+        }
+
+        let error;
+
+        if (id) {
+
+            ({ error } = await cliente
+                .from("peliculas")
+                .update(pelicula)
+                .eq("id", id));
+
+            if (!error) {
+                mostrarMensaje("Película actualizada correctamente.");
+            }
+
+        } else {
+
+            ({ error } = await cliente
+                .from("peliculas")
+                .insert([pelicula]));
+
+            if (!error) {
+                mostrarMensaje("Película agregada correctamente.");
+            }
+        }
+
+        if (error) {
+            mostrarMensaje("Error: " + error.message, true);
+            return;
+        }
+
+        limpiarFormulario();
+        cargarPeliculas();
+    });
+
+    // PREPARAR FORMULARIO PARA EDITAR
+
+    async function editarPelicula(id) {
+
+        const { data, error } = await cliente
+            .from("peliculas")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+        if (error) {
+            mostrarMensaje("No se pudo cargar la película.", true);
+            return;
+        }
+
+        document.getElementById("id").value = data.id;
+        document.getElementById("titulo").value = data.titulo;
+        document.getElementById("anio").value = data.anio;
+        document.getElementById("genero").value = data.genero;
+        document.getElementById("calificacion").value =
+            data.calificacion ?? "";
+        document.getElementById("sinopsis").value = data.sinopsis;
+        document.getElementById("imagen").value = data.imagen ?? "";
+        document.getElementById("trailer").value = data.trailer ?? "";
+
+        document.getElementById("tituloFormulario").textContent =
+            "Editar película";
+
+        document.getElementById("botonGuardar").textContent =
+            "Actualizar película";
+
+        document.getElementById("botonCancelar").hidden = false;
+
+        mostrarMensaje("Editando: " + data.titulo);
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+    // ELIMINAR PELÍCULAS
+
+    async function eliminarPelicula(id) {
+
+        const confirmar = confirm(
+            "¿Estás seguro de que deseas eliminar esta película?"
+        );
+
+        if (!confirmar) return;
+
+        const { error } = await cliente
+            .from("peliculas")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+            mostrarMensaje("Error al eliminar: " + error.message, true);
+            return;
+        }
+
+        mostrarMensaje("Película eliminada correctamente.");
+        cargarPeliculas();
+    }
+
+    // BOTONES DE LA TABLA
+
+    lista.addEventListener("click", function(event) {
+
+        const botonEditar = event.target.closest("[data-edit]");
+        const botonEliminar = event.target.closest("[data-delete]");
+
+        if (botonEditar) {
+            editarPelicula(botonEditar.dataset.edit);
+        }
+
+        if (botonEliminar) {
+            eliminarPelicula(botonEliminar.dataset.delete);
+        }
+    });
+
+    // LIMPIAR FORMULARIO
+
+    function limpiarFormulario() {
+
+        formulario.reset();
+
+        document.getElementById("id").value = "";
+
+        document.getElementById("tituloFormulario").textContent =
+            "Agregar película";
+
+        document.getElementById("botonGuardar").textContent =
+            "Guardar película";
+
+        document.getElementById("botonCancelar").hidden = true;
+    }
+
+    document.getElementById("botonCancelar")
+        .addEventListener("click", function() {
+
+            limpiarFormulario();
+            mostrarMensaje("Edición cancelada.");
+        });
+
+    // INICIAR PÁGINA
+
+    cargarPeliculas();
+
+</script>
+
+</body>
+</html>
