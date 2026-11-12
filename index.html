@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineWorld - Tu mundo de películas</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image:
+                linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)),
+                url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Contenedor principal */
+        .contenedor {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+            background: rgba(15, 15, 15, 0.92);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0,0,0,0.7);
+        }
+
+        /* Encabezado */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 25px 35px;
+            background: #151515;
+            border-bottom: 3px solid #e50914;
+        }
+
+        .header img {
+            width: 65px;
+            height: 65px;
+            margin-right: 18px;
+        }
+
+        .header h1 {
+            color: #e50914;
+            font-size: 30px;
+        }
+
+        /* Contenido */
+        .contenido {
+            text-align: center;
+            padding: 70px 25px;
+            min-height: 350px;
+        }
+
+        .contenido h2 {
+            font-size: 38px;
+            margin-bottom: 20px;
+        }
+
+        .contenido p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .boton {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #e50914;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .boton:hover {
+            background: #b20710;
+            transform: scale(1.05);
+        }
+
+        /* Pie de página */
+        .footer {
+            background: #111;
+            border-top: 3px solid #e50914;
+            padding: 25px;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .footer h3 {
+            color: #e50914;
+            margin-bottom: 10px;
+        }
+
+        .footer p {
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .contenido h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Contenedor principal -->
+    <div class="contenedor">
+
+        <!-- Header -->
+        <div class="header">
+
+            <img
+                src="https://cdn-icons-png.flaticon.com/512/3163/3163478.png"
+                alt="Logo de CineWorld">
+
+            <h1>CineWorld</h1>
+
+        </div>
+
+        <!-- Body -->
+        <div class="contenido">
+
+            <h2>Bienvenido a CineWorld</h2>
+
+            <p>
+                Descubre el mundo del cine, disfruta de grandes historias
+                y conoce los mejores avances de tus películas favoritas.
+            </p>
+
+            <p>
+                Explora el siguiente tráiler y vive la experiencia
+                del cine desde cualquier lugar.
+            </p>
+
+            <a
+                class="boton"
+                href="https://www.youtube.com/watch?v=YoHD9XEInc0"
+                target="_blank"
+                rel="noopener noreferrer">
+
+                Ver tráiler de Inception
+
+            </a>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+
+            <h3>Datos de identificación</h3>
+
+            <p>
+                Curso: Conceptualización de servicios en la nube
+                de aplicaciones y servicios en la nube
+            </p>
+
+            <p>
+                Nombre: Álvaro Ramón Moguel Fonseca
+            </p>
+
+            <p>
+                Código: 224790789
+            </p>
+
+            <p>
+                Correo: Alvaro-UDG@gmail.com
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
